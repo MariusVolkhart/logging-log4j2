@@ -18,11 +18,8 @@
 package org.apache.logging.log4j.plugins.processor;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Map;
@@ -53,9 +50,7 @@ public class PluginCache {
      */
     public Map<String, PluginEntry> getCategory(final String category) {
         final String key = category.toLowerCase();
-        if (!categories.containsKey(key)) {
-            categories.put(key, new TreeMap<String, PluginEntry>());
-        }
+        categories.putIfAbsent(key, new TreeMap<>());
         return categories.get(key);
     }
 
@@ -76,16 +71,12 @@ public class PluginCache {
                     final Map<String, PluginEntry> m = getCategory(category);
                     final int entries = in.readInt();
                     for (int j = 0; j < entries; j++) {
-                        final PluginEntry entry = new PluginEntry();
-                        entry.setKey(in.readUTF());
-                        entry.setClassName(in.readUTF());
-                        entry.setName(in.readUTF());
-                        entry.setPrintable(in.readBoolean());
-                        entry.setDefer(in.readBoolean());
-                        entry.setCategory(category);
-                        if (!m.containsKey(entry.getKey())) {
-                            m.put(entry.getKey(), entry);
-                        }
+                        final String key = in.readUTF();
+                        final String className = in.readUTF();
+                        final String name = in.readUTF();
+                        final boolean printable = in.readBoolean();
+                        final boolean defer = in.readBoolean();
+                        m.computeIfAbsent(key, s -> new PluginEntry(key, className, name, printable, defer, category));
                     }
                 }
             }

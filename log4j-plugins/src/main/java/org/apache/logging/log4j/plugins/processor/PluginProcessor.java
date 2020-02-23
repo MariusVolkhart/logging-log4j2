@@ -124,9 +124,7 @@ public class PluginProcessor extends AbstractProcessor {
                 packageName = calculatePackage(elementUtils, element, packageName);
             }
             final Collection<PluginEntry> entries = element.accept(pluginAliasesVisitor, plugin);
-            for (final PluginEntry pluginEntry : entries) {
-                list.add(pluginEntry);
-            }
+            list.addAll(entries);
         }
         return packageName;
     }
@@ -168,7 +166,7 @@ public class PluginProcessor extends AbstractProcessor {
             writer.println("");
             writer.println("public class Log4jPlugins extends PluginService {");
             writer.println("");
-            writer.println("    private static PluginEntry[] entries = new PluginEntry[] {");
+            writer.println("    private static final PluginEntry[] entries = new PluginEntry[] {");
             StringBuilder sb = new StringBuilder();
             int max = list.size() - 1;
             for (int i = 0; i < list.size(); ++i) {
@@ -188,7 +186,7 @@ public class PluginProcessor extends AbstractProcessor {
             }
             writer.println("    };");
             writer.println("    @Override");
-            writer.println("    public PluginEntry[] getEntries() { return entries;}");
+            writer.println("    public PluginEntry[] getEntries() { return entries; }");
             writer.println("}");
         }
     }
@@ -220,14 +218,14 @@ public class PluginProcessor extends AbstractProcessor {
         @Override
         public PluginEntry visitType(final TypeElement e, final Plugin plugin) {
             Objects.requireNonNull(plugin, "Plugin annotation is null.");
-            final PluginEntry entry = new PluginEntry();
-            entry.setKey(plugin.name().toLowerCase(Locale.US));
-            entry.setClassName(elements.getBinaryName(e).toString());
-            entry.setName(Plugin.EMPTY.equals(plugin.elementType()) ? plugin.name() : plugin.elementType());
-            entry.setPrintable(plugin.printObject());
-            entry.setDefer(plugin.deferChildren());
-            entry.setCategory(plugin.category());
-            return entry;
+            return new PluginEntry(
+                    plugin.name().toLowerCase(Locale.US),
+                    elements.getBinaryName(e).toString(),
+                    Plugin.EMPTY.equals(plugin.elementType()) ? plugin.name() : plugin.elementType(),
+                    plugin.printObject(),
+                    plugin.deferChildren(),
+                    plugin.category()
+            );
         }
     }
 
@@ -253,7 +251,7 @@ public class PluginProcessor extends AbstractProcessor {
         private final Elements elements;
 
         private PluginAliasesElementVisitor(final Elements elements) {
-            super(Collections.<PluginEntry> emptyList());
+            super(Collections.emptyList());
             this.elements = elements;
         }
 
@@ -265,13 +263,14 @@ public class PluginProcessor extends AbstractProcessor {
             }
             final Collection<PluginEntry> entries = new ArrayList<>(aliases.value().length);
             for (final String alias : aliases.value()) {
-                final PluginEntry entry = new PluginEntry();
-                entry.setKey(alias.toLowerCase(Locale.US));
-                entry.setClassName(elements.getBinaryName(e).toString());
-                entry.setName(Plugin.EMPTY.equals(plugin.elementType()) ? alias : plugin.elementType());
-                entry.setPrintable(plugin.printObject());
-                entry.setDefer(plugin.deferChildren());
-                entry.setCategory(plugin.category());
+                final PluginEntry entry = new PluginEntry(
+                        alias.toLowerCase(Locale.US),
+                        elements.getBinaryName(e).toString(),
+                        Plugin.EMPTY.equals(plugin.elementType()) ? alias : plugin.elementType(),
+                        plugin.printObject(),
+                        plugin.deferChildren(),
+                        plugin.category()
+                );
                 entries.add(entry);
             }
             return entries;

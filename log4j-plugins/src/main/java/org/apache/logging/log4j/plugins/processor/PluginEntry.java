@@ -25,15 +25,12 @@ import java.io.Serializable;
 public class PluginEntry implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private String key;
-    private String className;
-    private String name;
-    private boolean printable;
-    private boolean defer;
-    private transient String category;
-
-    public PluginEntry() {
-    }
+    private final String key;
+    private final String className;
+    private final String name;
+    private final boolean printable;
+    private final boolean defer;
+    private final String category;
 
     public PluginEntry(String key, String className, String name, boolean printable, boolean defer, String category) {
         this.key = key;
@@ -48,48 +45,24 @@ public class PluginEntry implements Serializable {
         return key;
     }
 
-    public void setKey(final String key) {
-        this.key = key;
-    }
-
     public String getClassName() {
         return className;
-    }
-
-    public void setClassName(final String className) {
-        this.className = className;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(final String name) {
-        this.name = name;
-    }
-
     public boolean isPrintable() {
         return printable;
-    }
-
-    public void setPrintable(final boolean printable) {
-        this.printable = printable;
     }
 
     public boolean isDefer() {
         return defer;
     }
 
-    public void setDefer(final boolean defer) {
-        this.defer = defer;
-    }
-
     public String getCategory() {
         return category;
-    }
-
-    public void setCategory(final String category) {
-        this.category = category;
     }
 
     @Override
