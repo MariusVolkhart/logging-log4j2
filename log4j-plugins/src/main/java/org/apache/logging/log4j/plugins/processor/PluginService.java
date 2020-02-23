@@ -25,26 +25,6 @@ import java.util.*;
  */
 public abstract class PluginService {
 
-    private final Map<String, List<PluginType<?>>> categories = new LinkedHashMap<>();
-//
-//    public PluginService() {
-//        PluginEntry[] entries = getEntries();
-//        for (PluginEntry entry : entries) {
-//            String category = entry.getCategory().toLowerCase();
-//            try {
-//                Class<?> clazz = this.getClass().getClassLoader().loadClass(entry.getClassName());
-//                List<PluginType<?>> list = categories.computeIfAbsent(category, ignored -> new LinkedList<>());
-//                PluginType<?> type = new PluginType<>(entry, clazz, entry.getName());
-//                list.add(type);
-//            } catch (ClassNotFoundException ex) {
-//                throw new IllegalStateException("No class named " + entry.getClassName() +
-//                        " located for element " + entry.getName(), ex);
-//            }
-//        }
-//    }
-
-    public abstract PluginEntry[] getEntries();
-
     /**
      * Loads all the categories and Plugin information for this service.
      *
@@ -54,16 +34,6 @@ public abstract class PluginService {
         Map<String, List<PluginType<?>>> categories = new HashMap<>();
         contributePlugins(categories);
         return categories;
-    }
-
-    // Test only
-    public List<PluginType<?>> getCategory(String category) {
-        return Collections.unmodifiableList(categories.get(category.toLowerCase()));
-    }
-
-    // Test only
-    public long size() {
-        return categories.size();
     }
 
     public abstract void contributePlugins(final Map<String, List<PluginType<?>>> plugins);

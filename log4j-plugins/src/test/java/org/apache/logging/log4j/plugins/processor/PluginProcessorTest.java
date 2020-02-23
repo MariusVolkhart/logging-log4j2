@@ -25,9 +25,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -48,17 +45,18 @@ public class PluginProcessorTest {
     }
 
     @Test
-    public void testTestCategoryFound() throws Exception {
+    public void testTestCategoryFound() {
         assertNotNull("No plugin annotation on FakePlugin.", p);
-        final List<PluginType<?>> testCategory = pluginService.getCategory(p.category());
-        assertNotEquals("No plugins were found.", 0, pluginService.size());
+        final Map<String, List<PluginType<?>>> categories = pluginService.getCategories();
+        final List<PluginType<?>> testCategory = getCategory(p.category());
+        assertNotEquals("No plugins were found.", 0, categories.size());
         assertNotNull("The category '" + p.category() + "' was not found.", testCategory);
         assertFalse(testCategory.isEmpty());
     }
 
     @Test
-    public void testFakePluginFoundWithCorrectInformation() throws Exception {
-        final List<PluginType<?>> list = pluginService.getCategory(p.category());
+    public void testFakePluginFoundWithCorrectInformation() {
+        final List<PluginType<?>> list = getCategory(p.category());
         assertNotNull(list);
         final PluginEntry fake = getEntry(list, p.name());
         assertNotNull(fake);
@@ -66,10 +64,10 @@ public class PluginProcessorTest {
     }
 
     @Test
-    public void testFakePluginAliasesContainSameInformation() throws Exception {
+    public void testFakePluginAliasesContainSameInformation() {
         final PluginAliases aliases = FakePlugin.class.getAnnotation(PluginAliases.class);
         for (final String alias : aliases.value()) {
-            final List<PluginType<?>> list = pluginService.getCategory(p.category());
+            final List<PluginType<?>> list = getCategory(p.category());
             assertNotNull(list);
             final PluginEntry fake = getEntry(list, alias);
             assertNotNull(fake);
@@ -88,9 +86,9 @@ public class PluginProcessorTest {
     }
 
     @Test
-    public void testNestedPlugin() throws Exception {
+    public void testNestedPlugin() {
         final Plugin p = FakePlugin.Nested.class.getAnnotation(Plugin.class);
-        final List<PluginType<?>> list = pluginService.getCategory(p.category());
+        final List<PluginType<?>> list = getCategory(p.category());
         assertNotNull(list);
         final PluginEntry nested = getEntry(list, p.name());
         assertNotNull(nested);
@@ -109,5 +107,9 @@ public class PluginProcessorTest {
             }
         }
         return null;
+    }
+
+    private List<PluginType<?>> getCategory(String category) {
+        return pluginService.getCategories().get(category.toLowerCase());
     }
 }

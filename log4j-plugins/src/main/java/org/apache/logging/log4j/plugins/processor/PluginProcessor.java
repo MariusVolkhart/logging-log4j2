@@ -20,8 +20,6 @@ package org.apache.logging.log4j.plugins.processor;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
-import org.apache.logging.log4j.plugins.util.AdHocPluginType;
-import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.util.Strings;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -46,13 +44,11 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -115,9 +111,9 @@ public class PluginProcessor extends AbstractProcessor {
     private String collectPlugins(String packageName, final Iterable<? extends Element> elements, List<PluginEntry> list) {
         boolean calculatePackage = packageName == null;
         final Elements elementUtils = processingEnv.getElementUtils();
-        final ElementVisitor<PluginEntry, Plugin> pluginVisitor = new PluginElementVisitor(elementUtils);
+        final ElementVisitor<PluginEntry, Plugin> pluginVisitor = new PluginElementVisitor();
         final ElementVisitor<Collection<PluginEntry>, Plugin> pluginAliasesVisitor = new PluginAliasesElementVisitor(
-                elementUtils);
+        );
         for (final Element element : elements) {
             final Plugin plugin = element.getAnnotation(Plugin.class);
             if (plugin == null) {
@@ -169,62 +165,34 @@ public class PluginProcessor extends AbstractProcessor {
         // Same as (int) Math.ceil(requiredCapacity / .75) but saves a method call and floating point math
         final int initialCapacity = (requiredCapacity * 4 + 2) / 3;
 
-        try {
-
-            String fqcn = createFqcn(pkg);
-            try (final PrintWriter writer = createSourceFile(fqcn)) {
-                writer.println("package " + pkg + ".plugins;");
-                writer.println("");
-                writer.println("import org.apache.logging.log4j.plugins.processor.PluginEntry;");
-                writer.println("import org.apache.logging.log4j.plugins.processor.PluginService;");
-                writer.println("import org.apache.logging.log4j.plugins.util.AdHocPluginType;");
-                writer.println("import org.apache.logging.log4j.plugins.util.PluginType;");
+        String fqcn = createFqcn(pkg);
+        try (final PrintWriter writer = createSourceFile(fqcn)) {
+            writer.println("package " + pkg + ".plugins;");
+            writer.println();
+            writer.println("import org.apache.logging.log4j.plugins.processor.PluginService;");
+            writer.println("import org.apache.logging.log4j.plugins.util.AdHocPluginType;");
+            writer.println("import org.apache.logging.log4j.plugins.util.PluginType;");
+            writer.println();
+            writer.println("import java.util.ArrayList;");
+            writer.println("import java.util.HashMap;");
+            writer.println("import java.util.List;");
+            writer.println("import java.util.Map;");
+            writer.println();
+            writer.println("public class Log4jPlugins extends PluginService {");
+            writer.println();
+            writer.println("    @Override");
+            writer.println("    public void contributePlugins(final Map<String, List<PluginType<?>>> plugins) {");
+            writer.println("        List<PluginType<?>> entries;");
+            for (Map.Entry<String, List<PluginEntry>> category : collect.entrySet()) {
                 writer.println();
-                writer.println("import java.util.ArrayList;");
-                writer.println("import java.util.HashMap;");
-                writer.println("import java.util.List;");
-                writer.println("import java.util.Map;");
-                writer.println();
-                writer.println("public class Log4jPlugins extends PluginService {");
-                writer.println("");
-                writer.println("    private static final PluginEntry[] entries = new PluginEntry[] {");
-                StringBuilder sb = new StringBuilder();
-                int max = list.size() - 1;
-                for (int i = 0; i < list.size(); ++i) {
-                    PluginEntry entry = list.get(i);
-                    sb.append("        ").append("new PluginEntry(\"");
-                    sb.append(entry.getKey()).append("\", \"");
-                    sb.append(entry.getClassName()).append("\", \"");
-                    sb.append(entry.getName()).append("\", ");
-                    sb.append(entry.isPrintable()).append(", ");
-                    sb.append(entry.isDefer()).append(", \"");
-                    sb.append(entry.getCategory()).append("\")");
-                    if (i < max) {
-                        sb.append(",");
-                    }
-                    writer.println(sb.toString());
-                    sb.setLength(0);
+                writer.println("        entries = plugins.computeIfAbsent(\""+category.getKey()+"\", ignored -> new ArrayList<>(" + category.getValue().size() + "));");
+                writer.println("        // entries.ensureCapacity(" + category.getValue().size() + ");");
+                for (PluginEntry entry : category.getValue()) {
+                    writer.println("        entries.add(new AdHocPluginType<>(\"" + entry.getKey() + "\", " + entry.getClassName() + ".class, \"" + entry.getName() + "\", " + entry.isPrintable() + ", " + entry.isDefer() + ", \"" + entry.getCategory() + "\"));");
                 }
-                writer.println("    };");
-                writer.println("    @Override");
-                writer.println("    public PluginEntry[] getEntries() { return entries; }");
-                writer.println();
-                writer.println("    @Override");
-                writer.println("    public void contributePlugins(final Map<String, List<PluginType<?>>> plugins) {");
-                writer.println("        List<PluginType<?>> entries;");
-                for (Map.Entry<String, List<PluginEntry>> category : collect.entrySet()) {
-                    writer.println();
-                    writer.println("        entries = plugins.computeIfAbsent(\""+category.getKey()+"\", ignored -> new ArrayList<>(" + category.getValue().size() + "));");
-                    writer.println("        // entries.ensureCapacity(" + category.getValue().size() + ");");
-                    for (PluginEntry entry : category.getValue()) {
-                        writer.println("        entries.add(new AdHocPluginType<>(\"" + entry.getKey() + "\", " + getClass().getClassLoader().loadClass(entry.getClassName()).getCanonicalName() + ".class, \"" + entry.getName() + "\", " + entry.isPrintable() + ", " + entry.isDefer() + ", \"" + entry.getCategory() + "\"));");
-                    }
-                }
-                writer.println("    }");
-                writer.println("}");
             }
-        } catch (ClassNotFoundException e) {
-            throw new AssertionError("Class must exist for it to be found by annotation processor", e);
+            writer.println("    }");
+            writer.println("}");
         }
     }
 
@@ -246,22 +214,16 @@ public class PluginProcessor extends AbstractProcessor {
      */
     private static class PluginElementVisitor extends SimpleElementVisitor7<PluginEntry, Plugin> {
 
-        private final Elements elements;
-
-        private PluginElementVisitor(final Elements elements) {
-            this.elements = elements;
-        }
-
         @Override
         public PluginEntry visitType(final TypeElement e, final Plugin plugin) {
             Objects.requireNonNull(plugin, "Plugin annotation is null.");
             return new PluginEntry(
                     plugin.name().toLowerCase(Locale.US),
-                    elements.getBinaryName(e).toString(),
+                    e.getQualifiedName().toString(),
                     Plugin.EMPTY.equals(plugin.elementType()) ? plugin.name() : plugin.elementType(),
                     plugin.printObject(),
                     plugin.deferChildren(),
-                    plugin.category()
+                    plugin.category().toLowerCase(Locale.US)
             );
         }
     }
@@ -285,11 +247,8 @@ public class PluginProcessor extends AbstractProcessor {
      */
     private static class PluginAliasesElementVisitor extends SimpleElementVisitor7<Collection<PluginEntry>, Plugin> {
 
-        private final Elements elements;
-
-        private PluginAliasesElementVisitor(final Elements elements) {
+        private PluginAliasesElementVisitor() {
             super(Collections.emptyList());
-            this.elements = elements;
         }
 
         @Override
@@ -302,11 +261,11 @@ public class PluginProcessor extends AbstractProcessor {
             for (final String alias : aliases.value()) {
                 final PluginEntry entry = new PluginEntry(
                         alias.toLowerCase(Locale.US),
-                        elements.getBinaryName(e).toString(),
+                        e.getQualifiedName().toString(),
                         Plugin.EMPTY.equals(plugin.elementType()) ? alias : plugin.elementType(),
                         plugin.printObject(),
                         plugin.deferChildren(),
-                        plugin.category()
+                        plugin.category().toLowerCase(Locale.US)
                 );
                 entries.add(entry);
             }
