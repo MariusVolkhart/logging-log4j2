@@ -299,30 +299,39 @@ public class PluginRegistry {
             if (list == null) {
                 newPluginsByCategory.put(categoryLowerCase, list = new ArrayList<>());
             }
-            final PluginEntry mainEntry = new PluginEntry();
-            final String mainElementName = plugin.elementType().equals(
-                Plugin.EMPTY) ? plugin.name() : plugin.elementType();
-            mainEntry.setKey(plugin.name().toLowerCase());
-            mainEntry.setName(plugin.name());
-            mainEntry.setCategory(plugin.category());
-            mainEntry.setClassName(clazz.getName());
-            mainEntry.setPrintable(plugin.printObject());
-            mainEntry.setDefer(plugin.deferChildren());
-            final PluginType<?> mainType = new PluginType<>(mainEntry, clazz, mainElementName);
+            final boolean usePluginElementType = !Plugin.EMPTY.equals(plugin.elementType());
+            final String pluginName = plugin.name();
+            final String className = clazz.getName();
+            final boolean printable = plugin.printObject();
+            final boolean defer = plugin.deferChildren();
+            final String category = plugin.category();
+            String elementName = usePluginElementType ? plugin.elementType() : pluginName;
+            final PluginEntry mainEntry = new PluginEntry(
+                    pluginName.toLowerCase(),
+                    className,
+                    pluginName,
+                    printable,
+                    defer,
+                    category
+            );
+            final PluginType<?> mainType = new PluginType<>(mainEntry, clazz, elementName);
             list.add(mainType);
             final PluginAliases pluginAliases = clazz.getAnnotation(PluginAliases.class);
             if (pluginAliases != null) {
-                for (final String alias : pluginAliases.value()) {
-                    final PluginEntry aliasEntry = new PluginEntry();
-                    final String aliasElementName = plugin.elementType().equals(
-                        Plugin.EMPTY) ? alias.trim() : plugin.elementType();
-                    aliasEntry.setKey(alias.trim().toLowerCase());
-                    aliasEntry.setName(plugin.name());
-                    aliasEntry.setCategory(plugin.category());
-                    aliasEntry.setClassName(clazz.getName());
-                    aliasEntry.setPrintable(plugin.printObject());
-                    aliasEntry.setDefer(plugin.deferChildren());
-                    final PluginType<?> aliasType = new PluginType<>(aliasEntry, clazz, aliasElementName);
+                for (String alias : pluginAliases.value()) {
+                    alias = alias.trim();
+                    if (!usePluginElementType) {
+                        elementName = alias;
+                    }
+                    final PluginEntry aliasEntry = new PluginEntry(
+                            alias.toLowerCase(),
+                            className,
+                            pluginName,
+                            printable,
+                            defer,
+                            category
+                    );
+                    final PluginType<?> aliasType = new PluginType<>(aliasEntry, clazz, elementName);
                     list.add(aliasType);
                 }
             }
