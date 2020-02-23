@@ -20,6 +20,8 @@ package org.apache.logging.log4j.plugins.processor;
 import org.apache.logging.log4j.LoggingException;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginAliases;
+import org.apache.logging.log4j.plugins.util.AdHocPluginType;
+import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.util.Strings;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -44,11 +46,14 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -157,37 +162,69 @@ public class PluginProcessor extends AbstractProcessor {
     }
 
     private void writeClassFile(String pkg, List<PluginEntry> list) {
-        String fqcn = createFqcn(pkg);
-        try (final PrintWriter writer = createSourceFile(fqcn)) {
-            writer.println("package " + pkg + ".plugins;");
-            writer.println("");
-            writer.println("import org.apache.logging.log4j.plugins.processor.PluginEntry;");
-            writer.println("import org.apache.logging.log4j.plugins.processor.PluginService;");
-            writer.println("");
-            writer.println("public class Log4jPlugins extends PluginService {");
-            writer.println("");
-            writer.println("    private static final PluginEntry[] entries = new PluginEntry[] {");
-            StringBuilder sb = new StringBuilder();
-            int max = list.size() - 1;
-            for (int i = 0; i < list.size(); ++i) {
-                PluginEntry entry = list.get(i);
-                sb.append("        ").append("new PluginEntry(\"");
-                sb.append(entry.getKey()).append("\", \"");
-                sb.append(entry.getClassName()).append("\", \"");
-                sb.append(entry.getName()).append("\", ");
-                sb.append(entry.isPrintable()).append(", ");
-                sb.append(entry.isDefer()).append(", \"");
-                sb.append(entry.getCategory()).append("\")");
-                if (i < max) {
-                    sb.append(",");
+        final Map<String, List<PluginEntry>> collect = list.parallelStream().collect(Collectors.groupingBy(PluginEntry::getCategory));
+
+
+        final int requiredCapacity = collect.size();
+        // Same as (int) Math.ceil(requiredCapacity / .75) but saves a method call and floating point math
+        final int initialCapacity = (requiredCapacity * 4 + 2) / 3;
+
+        try {
+
+            String fqcn = createFqcn(pkg);
+            try (final PrintWriter writer = createSourceFile(fqcn)) {
+                writer.println("package " + pkg + ".plugins;");
+                writer.println("");
+                writer.println("import org.apache.logging.log4j.plugins.processor.PluginEntry;");
+                writer.println("import org.apache.logging.log4j.plugins.processor.PluginService;");
+                writer.println("import org.apache.logging.log4j.plugins.util.AdHocPluginType;");
+                writer.println("import org.apache.logging.log4j.plugins.util.PluginType;");
+                writer.println();
+                writer.println("import java.util.ArrayList;");
+                writer.println("import java.util.HashMap;");
+                writer.println("import java.util.List;");
+                writer.println("import java.util.Map;");
+                writer.println();
+                writer.println("public class Log4jPlugins extends PluginService {");
+                writer.println("");
+                writer.println("    private static final PluginEntry[] entries = new PluginEntry[] {");
+                StringBuilder sb = new StringBuilder();
+                int max = list.size() - 1;
+                for (int i = 0; i < list.size(); ++i) {
+                    PluginEntry entry = list.get(i);
+                    sb.append("        ").append("new PluginEntry(\"");
+                    sb.append(entry.getKey()).append("\", \"");
+                    sb.append(entry.getClassName()).append("\", \"");
+                    sb.append(entry.getName()).append("\", ");
+                    sb.append(entry.isPrintable()).append(", ");
+                    sb.append(entry.isDefer()).append(", \"");
+                    sb.append(entry.getCategory()).append("\")");
+                    if (i < max) {
+                        sb.append(",");
+                    }
+                    writer.println(sb.toString());
+                    sb.setLength(0);
                 }
-                writer.println(sb.toString());
-                sb.setLength(0);
+                writer.println("    };");
+                writer.println("    @Override");
+                writer.println("    public PluginEntry[] getEntries() { return entries; }");
+                writer.println();
+                writer.println("    @Override");
+                writer.println("    public void contributePlugins(final Map<String, List<PluginType<?>>> plugins) {");
+                writer.println("        List<PluginType<?>> entries;");
+                for (Map.Entry<String, List<PluginEntry>> category : collect.entrySet()) {
+                    writer.println();
+                    writer.println("        entries = plugins.computeIfAbsent(\""+category.getKey()+"\", ignored -> new ArrayList<>(" + category.getValue().size() + "));");
+                    writer.println("        // entries.ensureCapacity(" + category.getValue().size() + ");");
+                    for (PluginEntry entry : category.getValue()) {
+                        writer.println("        entries.add(new AdHocPluginType<>(\"" + entry.getKey() + "\", " + getClass().getClassLoader().loadClass(entry.getClassName()).getCanonicalName() + ".class, \"" + entry.getName() + "\", " + entry.isPrintable() + ", " + entry.isDefer() + ", \"" + entry.getCategory() + "\"));");
+                    }
+                }
+                writer.println("    }");
+                writer.println("}");
             }
-            writer.println("    };");
-            writer.println("    @Override");
-            writer.println("    public PluginEntry[] getEntries() { return entries; }");
-            writer.println("}");
+        } catch (ClassNotFoundException e) {
+            throw new AssertionError("Class must exist for it to be found by annotation processor", e);
         }
     }
 

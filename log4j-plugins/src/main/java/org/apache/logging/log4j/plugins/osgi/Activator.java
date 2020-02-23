@@ -56,9 +56,10 @@ public final class Activator implements BundleActivator, SynchronousBundleListen
     private void loadPlugins(final BundleContext bundleContext) {
         try {
             final Collection<ServiceReference<PluginService>> serviceReferences = bundleContext.getServiceReferences(PluginService.class, null);
+            PluginRegistry registry = PluginRegistry.getInstance();
             for (final ServiceReference<PluginService> serviceReference : serviceReferences) {
                 final PluginService pluginService = bundleContext.getService(serviceReference);
-                PluginRegistry.getInstance().loadFromBundle(pluginService.getCategories(), bundleContext.getBundle().getBundleId());
+                registry.loadFromBundle(pluginService.getCategories(), bundleContext.getBundle().getBundleId());
             }
         } catch (final InvalidSyntaxException ex) {
             LOGGER.error("Error accessing Plugins", ex);

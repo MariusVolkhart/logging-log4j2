@@ -19,69 +19,21 @@ package org.apache.logging.log4j.plugins.util;
 
 import org.apache.logging.log4j.plugins.processor.PluginEntry;
 
-/**
- * Plugin Descriptor. This is a memento object for Plugin annotations paired to their annotated classes.
- *
- * @param <T> The plug-in class, which can be any kind of class.
- * @see org.apache.logging.log4j.plugins.Plugin
- */
-public class PluginType<T> {
+public interface PluginType<T> {
 
-    private final PluginEntry pluginEntry;
-    private final Class<T> pluginClass;
-    private final String elementName;
+    String getKey();
 
-    /**
-     * @since 2.1
-     */
-    public PluginType(final PluginEntry pluginEntry, final Class<T> pluginClass, final String elementName) {
-        this.pluginEntry = pluginEntry;
-        this.pluginClass = pluginClass;
-        this.elementName = elementName;
-    }
+    Class<T> getPluginClass();
 
-    public PluginEntry getPluginEntry() {
-        return this.pluginEntry;
-    }
+    String getElementName();
 
-    public Class<T> getPluginClass() {
-        return this.pluginClass;
-    }
+    boolean isObjectPrintable();
 
-    public String getElementName() {
-        return this.elementName;
-    }
+    boolean isDeferChildren();
 
-    /**
-     * @since 2.1
-     */
-    public String getKey() {
-        return this.pluginEntry.getKey();
-    }
+    String getCategory();
 
-    public boolean isObjectPrintable() {
-        return this.pluginEntry.isPrintable();
-    }
-
-    public boolean isDeferChildren() {
-        return this.pluginEntry.isDefer();
-    }
-
-    /**
-     * @since 2.1
-     */
-    public String getCategory() {
-        return this.pluginEntry.getCategory();
-    }
-
-    @Override
-    public String toString() {
-        return "PluginType [pluginClass=" + pluginClass +
-                ", key=" + pluginEntry.getKey() +
-                ", elementName=" + pluginEntry.getName() +
-                ", isObjectPrintable=" + pluginEntry.isPrintable() +
-                ", isDeferChildren==" + pluginEntry.isDefer() +
-                ", category=" + pluginEntry.getCategory() +
-                "]";
+    default PluginEntry getPluginEntry() {
+        return new PluginEntry(getKey(), getPluginClass().getName(), getElementName(), isObjectPrintable(), isDeferChildren(), getCategory());
     }
 }

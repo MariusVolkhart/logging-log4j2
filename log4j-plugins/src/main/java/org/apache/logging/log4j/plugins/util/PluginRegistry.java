@@ -161,6 +161,8 @@ public class PluginRegistry {
      * @param categories All the categories in the bundle.
      * @since 3.0
      */
+    // TODO there is a bug here. the PluginService in the repo wraps the Map it returns from getCategories() in an unmodifiableMap.
+    //   This function tries to mutate that map.
     public void loadFromBundle(Map<String, List<PluginType<?>>> categories, Long bundleId) {
         pluginsByCategoryByBundleId.put(bundleId, categories);
         for (Map.Entry<String, List<PluginType<?>>> entry: categories.entrySet()) {
@@ -188,27 +190,12 @@ public class PluginRegistry {
     /**
      * @since 3.0
      */
-    public void loadPlugins(ClassLoader classLoader, Map<String, List<PluginType<?>>> map) {
+    public void loadPlugins(ClassLoader classLoader, Map<String, List<PluginType<?>>> categories) {
         final long startTime = System.nanoTime();
         final ServiceLoader<PluginService> serviceLoader = ServiceLoader.load(PluginService.class, classLoader);
         int pluginCount = 0;
         for (final PluginService pluginService : serviceLoader) {
-            PluginEntry[] entries = pluginService.getEntries();
-            for (PluginEntry entry : entries) {
-                try {
-                    final Class<?> clazz = classLoader.loadClass(entry.getClassName());
-                    final PluginType<?> type = new PluginType<>(entry, clazz, entry.getName());
-                    String category = entry.getCategory().toLowerCase();
-                    if (!map.containsKey(category)) {
-                        map.put(category, new ArrayList<>());
-                    }
-                    List<PluginType<?>> list = map.get(category);
-                    list.add(type);
-                    ++pluginCount;
-                } catch (final ClassNotFoundException e) {
-                    LOGGER.info("Plugin [{}] could not be loaded due to missing classes.", entry.getClassName(), e);
-                }
-            }
+            pluginService.contributePlugins(categories);
         }
         final int numPlugins = pluginCount;
         LOGGER.debug(() -> {
@@ -246,7 +233,7 @@ public class PluginRegistry {
                 final String className = entry.getClassName();
                 try {
                     final Class<?> clazz = loader.loadClass(className);
-                    final PluginType<?> type = new PluginType<>(entry, clazz, entry.getName());
+                    final PluginType<?> type = new EntryPluginType<>(entry, clazz, entry.getName());
                     types.add(type);
                     ++pluginCount;
                 } catch (final ClassNotFoundException e) {
@@ -314,7 +301,7 @@ public class PluginRegistry {
                     defer,
                     category
             );
-            final PluginType<?> mainType = new PluginType<>(mainEntry, clazz, elementName);
+            final PluginType<?> mainType = new EntryPluginType<>(mainEntry, clazz, elementName);
             list.add(mainType);
             final PluginAliases pluginAliases = clazz.getAnnotation(PluginAliases.class);
             if (pluginAliases != null) {
@@ -331,7 +318,7 @@ public class PluginRegistry {
                             defer,
                             category
                     );
-                    final PluginType<?> aliasType = new PluginType<>(aliasEntry, clazz, elementName);
+                    final PluginType<?> aliasType = new EntryPluginType<>(aliasEntry, clazz, elementName);
                     list.add(aliasType);
                 }
             }
