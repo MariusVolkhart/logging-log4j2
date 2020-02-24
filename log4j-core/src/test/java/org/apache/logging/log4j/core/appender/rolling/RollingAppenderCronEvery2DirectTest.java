@@ -22,12 +22,14 @@ import java.util.Random;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.util.Unbox;
 import org.hamcrest.Matcher;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertTrue;
@@ -71,13 +73,13 @@ public class RollingAppenderCronEvery2DirectTest {
                 succeeded = true;
                 break;
             }
-            logger.debug("Sleeping #" + i);
+            logger.debug("Sleeping #{}", box(i));
             Thread.sleep(100); // Allow time for rollover to complete
         }
         if (!succeeded) {
             final File[] files = dir.listFiles();
             for (final File dirFile : files) {
-                logger.error("Found file: " + dirFile.getPath());
+                logger.error("Found file: {}", dirFile.getPath());
             }
             fail("No compressed files found");
         }

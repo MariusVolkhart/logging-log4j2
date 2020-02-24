@@ -143,7 +143,7 @@ public final class MapRewritePolicy implements RewritePolicy {
             }
             final String value = pair.getValue();
             if (value == null) {
-                LOGGER.error("A null value for key " + key + " is not allowed in MapRewritePolicy");
+                LOGGER.error("A null value for key {} is not allowed in MapRewritePolicy", key);
                 continue;
             }
             map.put(pair.getKey(), pair.getValue());

@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertNotNull;
@@ -121,7 +122,7 @@ public class RollingAppenderSizeTest {
             Assert.fail(String.format("Unexpected file: %s (%s bytes)", path, Files.getAttribute(path, "size")));
         }
         for (int i = 0; i < 500; ++i) {
-            logger.debug("This is test message number " + i);
+            logger.debug("This is test message number {}", box(i));
         }
         try {
             Thread.sleep(100);

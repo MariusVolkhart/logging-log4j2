@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.junit.Assert.*;
 
 /**
@@ -45,7 +46,7 @@ public class RolloverWithDeletedOldFileTest {
     final Logger logger = loggerContextRule.getLogger();
     for (int i = 0; i < 10; ++i) {
       // 30 chars per message: each message triggers a rollover
-      logger.fatal("This is a test message number " + i); // 30 chars:
+      logger.fatal("This is a test message number {}", box(i)); // 30 chars:
     }
     Thread.sleep(100); // Allow time for rollover to complete
 
@@ -68,7 +69,7 @@ public class RolloverWithDeletedOldFileTest {
     fileToRemove.delete();
     for (int i = 0; i < 10; ++i) {
       // 30 chars per message: each message triggers a rollover
-      logger.fatal("This is a test message number " + i); // 30 chars:
+      logger.fatal("This is a test message number {}", box(i)); // 30 chars:
     }
     Thread.sleep(100); // Allow time for rollover to complete again
     files = dir.listFiles();

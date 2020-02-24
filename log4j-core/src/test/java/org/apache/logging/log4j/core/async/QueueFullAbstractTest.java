@@ -31,6 +31,9 @@ import org.apache.logging.log4j.core.appender.AsyncAppender;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 
 import com.lmax.disruptor.dsl.Disruptor;
+import org.apache.logging.log4j.util.Unbox;
+
+import static org.apache.logging.log4j.util.Unbox.box;
 
 /**
  * Tests queue full scenarios abstract superclass.
@@ -78,7 +81,7 @@ public abstract class QueueFullAbstractTest {
                 TRACE("DomainObject decrementing unlocker countdown latch before logging. Count was " + unlocker.countDownLatch.getCount());
                 unlocker.countDownLatch.countDown();
                 TRACE("DomainObject logging message " + i  + ". Remaining capacity=" + asyncRemainingCapacity(innerLogger));
-                innerLogger.info("Logging in toString() #" + i);
+                innerLogger.info("Logging in toString() #{}", box(i));
             }
             return "Who's bad?!";
         }

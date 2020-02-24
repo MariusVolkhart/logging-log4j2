@@ -32,6 +32,9 @@ import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.Unbox;
+
+import static org.apache.logging.log4j.util.Unbox.box;
 
 /**
  * Most of the work of the {@link org.apache.logging.log4j.core.layout.PatternLayout} class is delegated to the
@@ -463,8 +466,7 @@ public final class PatternParser {
 	                            c - '0', formattingInfo.isLeftTruncate(), formattingInfo.isZeroPad());
 	                    state = ParserState.MAX_STATE;
 	                } else {
-	                    LOGGER.error("Error occurred in position " + i + ".\n Was expecting digit, instead got char \"" + c
-	                            + "\".");
+                        LOGGER.error("Error occurred in position {}.\n Was expecting digit, instead got char \"{}\".", box(i), box(c));
 
 	                    state = ParserState.LITERAL_STATE;
 	                }
@@ -523,7 +525,7 @@ public final class PatternParser {
         Class<? extends PatternConverter> converterClass = null;
 
         if (rules == null) {
-            LOGGER.error("Null rules for [" + converterId + ']');
+            LOGGER.error("Null rules for [{}]", converterId);
             return null;
         }
         for (int i = converterId.length(); i > 0 && converterClass == null; i--) {
@@ -532,7 +534,7 @@ public final class PatternParser {
         }
 
         if (converterClass == null) {
-            LOGGER.error("Unrecognized format specifier [" + converterId + ']');
+            LOGGER.error("Unrecognized format specifier [{}]", converterId);
             return null;
         }
 
@@ -552,13 +554,13 @@ public final class PatternParser {
                 if (newInstanceMethod == null) {
                     newInstanceMethod = method;
                 } else if (method.getReturnType().equals(newInstanceMethod.getReturnType())) {
-                    LOGGER.error("Class " + converterClass + " cannot contain multiple static newInstance methods");
+                    LOGGER.error("Class {} cannot contain multiple static newInstance methods", converterClass);
                     return null;
                 }
             }
         }
         if (newInstanceMethod == null) {
-            LOGGER.error("Class " + converterClass + " does not contain a static newInstance method");
+            LOGGER.error("Class {} does not contain a static newInstance method", converterClass);
             return null;
         }
 
@@ -575,8 +577,7 @@ public final class PatternParser {
                 } else if (clazz.isAssignableFrom(Configuration.class)) {
                     parms[i] = config;
                 } else {
-                    LOGGER.error("Unknown parameter type " + clazz.getName() + " for static newInstance method of "
-                            + converterClass.getName());
+                    LOGGER.error("Unknown parameter type {} for static newInstance method of {}", clazz.getName(), converterClass.getName());
                     errors = true;
                 }
                 ++i;

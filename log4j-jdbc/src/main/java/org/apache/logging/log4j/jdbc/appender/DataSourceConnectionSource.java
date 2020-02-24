@@ -74,7 +74,7 @@ public final class DataSourceConnectionSource extends AbstractConnectionSource {
             final InitialContext context = new InitialContext();
             final DataSource dataSource = (DataSource) context.lookup(jndiName);
             if (dataSource == null) {
-                LOGGER.error("No data source found with JNDI name [" + jndiName + "].");
+                LOGGER.error("No data source found with JNDI name [{}].", jndiName);
                 return null;
             }
 

@@ -214,7 +214,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
      */
     @Override
     public void initialize() {
-        LOGGER.debug(Version.getProductString() + " initializing configuration {}", this);
+        LOGGER.debug("{} initializing configuration {}", Version.getProductString(), this);
         subst.setConfiguration(this);
         try {
             scriptManager = new ScriptManager(this, watchManager);
@@ -504,7 +504,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
         try {
             for (final Node child : node.getChildren()) {
                 if (child.getType() == null) {
-                    LOGGER.error("Unable to locate plugin type for " + child.getName());
+                    LOGGER.error("Unable to locate plugin type for {}", child.getName());
                     continue;
                 }
                 final Class<?> clazz = child.getType().getPluginClass();
@@ -514,7 +514,7 @@ public abstract class AbstractConfiguration extends AbstractFilterable implement
                 preConfigure(child);
             }
         } catch (final Exception ex) {
-            LOGGER.error("Error capturing node data for node " + node.getName(), ex);
+            LOGGER.error("Error capturing node data for node {}" + node.getName(), ex);
         }
     }
 

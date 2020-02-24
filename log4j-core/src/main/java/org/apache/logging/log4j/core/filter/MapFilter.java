@@ -241,7 +241,7 @@ public class MapFilter extends AbstractFilter {
             }
             final String value = pair.getValue();
             if (value == null) {
-                LOGGER.error("A null value for key " + key + " is not allowed in MapFilter");
+                LOGGER.error("A null value for key {} is not allowed in MapFilter", key);
                 continue;
             }
             List<String> list = map.get(pair.getKey());

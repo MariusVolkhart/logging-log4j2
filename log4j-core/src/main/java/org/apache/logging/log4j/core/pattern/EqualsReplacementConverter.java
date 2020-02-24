@@ -24,6 +24,8 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilders;
 
+import static org.apache.logging.log4j.util.Unbox.box;
+
 /**
  * Equals pattern converter.
  */
@@ -41,7 +43,7 @@ public final class EqualsReplacementConverter extends EqualsBaseReplacementConve
      */
     public static EqualsReplacementConverter newInstance(final Configuration config, final String[] options) {
         if (options.length != 3) {
-            LOGGER.error("Incorrect number of options on equals. Expected 3 received " + options.length);
+            LOGGER.error("Incorrect number of options on equals. Expected 3 received {}", box(options.length));
             return null;
         }
         if (options[0] == null) {

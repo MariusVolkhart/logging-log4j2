@@ -120,8 +120,7 @@ public class ScriptManager implements FileWatcher, Serializable {
     public void addScript(final AbstractScript script) {
         final ScriptEngine engine = manager.getEngineByName(script.getLanguage());
         if (engine == null) {
-            logger.error("No ScriptEngine found for language " + script.getLanguage() + ". Available languages are: "
-                    + languages);
+            logger.error("No ScriptEngine found for language {}. Available languages are: {}", script.getLanguage(), languages);
             return;
         }
         if (engine.getFactory().getParameter(KEY_THREADING) == null) {

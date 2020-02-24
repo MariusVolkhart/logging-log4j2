@@ -395,7 +395,7 @@ public class PropertiesConfiguration  extends Log4j1Configuration {
     public Appender parseAppender(Properties props, String appenderName) {
         Appender appender = registry.get(appenderName);
         if ((appender != null)) {
-            LOGGER.debug("Appender \"" + appenderName + "\" was already parsed.");
+            LOGGER.debug("Appender \"{}\" was already parsed.", appenderName);
             return appender;
         }
         // Appender was not previously initialized.

@@ -23,6 +23,9 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.StringBuilders;
+import org.apache.logging.log4j.util.Unbox;
+
+import static org.apache.logging.log4j.util.Unbox.box;
 
 /**
  * Equals ignore case pattern converter.
@@ -43,7 +46,7 @@ public final class EqualsIgnoreCaseReplacementConverter extends EqualsBaseReplac
      */
     public static EqualsIgnoreCaseReplacementConverter newInstance(final Configuration config, final String[] options) {
         if (options.length != 3) {
-            LOGGER.error("Incorrect number of options on equalsIgnoreCase. Expected 3 received " + options.length);
+            LOGGER.error("Incorrect number of options on equalsIgnoreCase. Expected 3 received {}", box(options.length));
             return null;
         }
         if (options[0] == null) {

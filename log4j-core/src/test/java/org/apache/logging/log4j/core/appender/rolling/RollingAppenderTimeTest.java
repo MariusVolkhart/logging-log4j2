@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertTrue;
@@ -64,7 +65,7 @@ public class RollingAppenderTimeTest {
             if (hasGzippedFile.matches(files)) {
                 return; // test succeeded
             }
-            logger.debug("Adding additional event " + i);
+            logger.debug("Adding additional event {}", box(i));
             Thread.sleep(100); // Allow time for rollover to complete
         }
         fail("No compressed files found");

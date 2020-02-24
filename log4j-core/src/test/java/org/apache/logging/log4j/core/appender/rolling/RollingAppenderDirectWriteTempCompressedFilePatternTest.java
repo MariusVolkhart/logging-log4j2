@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertNotNull;
@@ -73,7 +74,7 @@ public class RollingAppenderDirectWriteTempCompressedFilePatternTest {
             WatchKey key = dir.toPath().register(watcher, StandardWatchEventKinds.ENTRY_CREATE);
 
             for (int i = 0; i < 100; ++i) {
-                logger.debug("This is test message number " + i);
+                logger.debug("This is test message number {}", box(i));
             }
             Thread.sleep(50);
             assertTrue("Directory not created", dir.exists() && dir.listFiles().length > 0);

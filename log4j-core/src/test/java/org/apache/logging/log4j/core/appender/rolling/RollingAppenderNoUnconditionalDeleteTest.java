@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.junit.Assert.*;
 
 /**
@@ -73,7 +74,7 @@ public class RollingAppenderNoUnconditionalDeleteTest {
         final int LINECOUNT = 18; // config has max="100"
         for (int i = 0; i < LINECOUNT; ++i) {
             // 30 chars per message: each message triggers a rollover
-            logger.debug("This is a test message number " + i); // 30 chars:
+            logger.debug("This is a test message number {}", box(i)); // 30 chars:
         }
         Thread.sleep(100); // Allow time for rollover to complete
 

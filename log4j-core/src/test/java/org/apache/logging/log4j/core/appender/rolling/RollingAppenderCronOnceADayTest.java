@@ -18,6 +18,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 
 import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.hamcrest.Matchers.endsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -72,7 +73,7 @@ public class RollingAppenderCronOnceADayTest {
       content = content.replace("@CRON_EXPR@", cronExpression);
       Files.write(FileSystems.getDefault()
             .getPath(TARGET_TEST_CLASSES, CONFIG_TARGET), content.getBytes(UTF_8));
-      StatusLogger.getLogger().debug("Cron expression will be " + cronExpression + " in " + remainingTime + "ms");
+        StatusLogger.getLogger().debug("Cron expression will be {} in {}ms", cronExpression, box(remainingTime));
     }
 
     private final LoggerContextRule loggerContextRule = new LoggerContextRule(CONFIG_TARGET);

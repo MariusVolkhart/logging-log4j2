@@ -283,13 +283,13 @@ public class TcpSocketManager extends AbstractSocketManager {
         void reconnect() throws IOException {
             List<InetSocketAddress> socketAddresses = FACTORY.resolver.resolveHost(host, port);
             if (socketAddresses.size() == 1) {
-                LOGGER.debug("Reconnecting " + socketAddresses.get(0));
+                LOGGER.debug("Reconnecting {}", socketAddresses.get(0));
                 connect(socketAddresses.get(0));
             } else {
                 IOException ioe = null;
                 for (InetSocketAddress socketAddress : socketAddresses) {
                     try {
-                        LOGGER.debug("Reconnecting " + socketAddress);
+                        LOGGER.debug("Reconnecting {}", socketAddress);
                         connect(socketAddress);
                         return;
                     } catch (IOException ex) {

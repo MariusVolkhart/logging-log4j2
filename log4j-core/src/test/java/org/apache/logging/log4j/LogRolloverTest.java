@@ -20,6 +20,7 @@ import java.io.File;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.util.Unbox;
 
 /**
  *
@@ -35,7 +36,7 @@ public class LogRolloverTest {
             final Logger logger = LogManager.getLogger("TestLogger");
 
             for (long i = 0;; i += 1) {
-                logger.debug("Sequence: " + i);
+                logger.debug("Sequence: {}", Unbox.box(i));
                 Thread.sleep(250);
             }
         }

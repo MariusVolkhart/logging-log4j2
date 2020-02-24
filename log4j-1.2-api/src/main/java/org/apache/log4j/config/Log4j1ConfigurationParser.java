@@ -440,7 +440,7 @@ public class Log4j1ConfigurationParser {
     }
 
     private void reportWarning(final String msg) {
-        StatusLogger.getLogger().warn("Log4j 1 configuration parser: " + msg);
+        StatusLogger.getLogger().warn("Log4j 1 configuration parser: {}", msg);
     }
 
 }

@@ -31,6 +31,7 @@ import java.util.Random;
 
 import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.*;
@@ -65,7 +66,7 @@ public class RollingAppenderTimeAndSizeTest {
         for (int j = 0; j < 100; ++j) {
             int count = rand.nextInt(50);
             for (int i = 0; i < count; ++i) {
-                logger.debug("This is test message number " + i);
+                logger.debug("This is test message number {}", box(i));
             }
             Thread.sleep(rand.nextInt(50));
         }

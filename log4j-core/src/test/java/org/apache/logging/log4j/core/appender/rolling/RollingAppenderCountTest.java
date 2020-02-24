@@ -19,6 +19,7 @@ package org.apache.logging.log4j.core.appender.rolling;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.util.Unbox;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -33,6 +34,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -93,7 +95,7 @@ public class RollingAppenderCountTest {
     @Test
     public void testLog() throws Exception {
         for (long i = 0; i < 60; ++i) {
-            logger.info("Sequence: " + i);
+            logger.info("Sequence: {}", box(i));
             logger.debug(RandomStringUtils.randomAscii(128, 512));
             Thread.sleep(250);
         }

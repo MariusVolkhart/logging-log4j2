@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.apache.logging.log4j.util.Timer;
 
+import static org.apache.logging.log4j.util.Unbox.box;
 
 
 @RestController
@@ -55,7 +56,7 @@ public class SampleController {
             Timer timer = new Timer("sample");
             timer.start();
             for (int n = 0; n < count; ++n) {
-                LOGGER.info("Log record " + n);
+                LOGGER.info("Log record {}", box(n));
             }
             timer.stop();
             StringBuilder sb = new StringBuilder("Elapsed time = ");
@@ -108,9 +109,8 @@ public class SampleController {
         }
 
         public void run() {
-            String prefix = "Thread " + id + " record ";
             for (int i = 0; i < count; ++i) {
-                LOGGER.info(prefix + i);
+                LOGGER.info("Thread {} record {}", box(id), box(i));
             }
         }
     }

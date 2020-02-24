@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -59,7 +60,7 @@ public class RollingRandomAccessFileManagerHeaderFooterTest {
     @Test
     public void testAppender() throws Exception {
         for (int i = 0; i < 8; ++i) {
-            logger.debug("This is test message number " + i);
+            logger.debug("This is test message number {}", box(i));
         }
         Thread.sleep(50);
         final File dir = new File(DIR);

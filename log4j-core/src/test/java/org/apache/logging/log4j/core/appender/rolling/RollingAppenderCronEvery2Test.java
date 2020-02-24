@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.*;
@@ -73,13 +74,13 @@ public class RollingAppenderCronEvery2Test {
                 succeeded = true;
                 break;
             }
-            logger.debug("Sleeping #" + i);
+            logger.debug("Sleeping #{}", box(i));
             Thread.sleep(100); // Allow time for rollover to complete
         }
         if (!succeeded) {
             final File[] files = dir.listFiles();
             for (final File dirFile : files) {
-                logger.error("Found file: " + dirFile.getPath());
+                logger.error("Found file: {}", dirFile.getPath());
             }
             fail("No compressed files found");
         }

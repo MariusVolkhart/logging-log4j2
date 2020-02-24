@@ -45,6 +45,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static org.apache.logging.log4j.hamcrest.MapMatchers.hasSize;
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasKey;
@@ -265,7 +266,7 @@ public class TestConfigurator {
         assertTrue("setLastModified should have succeeded.", file.setLastModified(System.currentTimeMillis()));
         TimeUnit.SECONDS.sleep(config.getWatchManager().getIntervalSeconds()+1);
         for (int i = 0; i < 17; ++i) {
-            logger.debug("Test message " + i);
+            logger.debug("Test message {}", box(i));
         }
 
         // Sleep and check

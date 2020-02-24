@@ -22,9 +22,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.message.ThreadDumpMessage;
+import org.apache.logging.log4j.util.Unbox;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.junit.Assert.*;
 
 /**
@@ -94,7 +96,7 @@ public class ReconfigurationDeadlockTest {
             int i = 0;
             try {
                 for (i=0; i < 30; ++i) {
-                    logger.error("Thread: " + index + ", Test: " + i++);
+                    logger.error("Thread: {}, Test: {}", box(index), box(i++));
                 }
             } catch (final Exception ie) {
                 return;

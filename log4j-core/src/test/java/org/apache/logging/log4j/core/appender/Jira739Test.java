@@ -20,6 +20,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.util.Unbox;
+
+import static org.apache.logging.log4j.util.Unbox.box;
 
 /**
  * Shows how to use ANSI escape codes to color messages. Each message is printed to the console in color, but the rest
@@ -40,9 +43,9 @@ public class Jira739Test {
         try (final LoggerContext ctx = Configurator.initialize(Jira739Test.class.getName(),
                 "target/test-classes/LOG4J2-739.xml")) {
             for (int i = 0; i < 10; i++) {
-                LOG.trace("Entering Log4j Example " + i + " times");
+                LOG.trace("Entering Log4j Example {} times", box(i));
                 LOG.error("Ohh!Failed!");
-                LOG.trace("Exiting Log4j Example." + i + " times");
+                LOG.trace("Exiting Log4j Example.{} times", box(i));
             }
         }
     }

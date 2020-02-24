@@ -81,7 +81,7 @@ public final class FailoverAppender extends AbstractAppender {
         if (appender != null) {
             primary = new AppenderControl(appender, null, null);
         } else {
-            LOGGER.error("Unable to locate primary Appender " + primaryRef);
+            LOGGER.error("Unable to locate primary Appender {}", primaryRef);
             ++errors;
         }
         for (final String name : failovers) {
@@ -89,7 +89,7 @@ public final class FailoverAppender extends AbstractAppender {
             if (foAppender != null) {
                 failoverAppenders.add(new AppenderControl(foAppender, null, null));
             } else {
-                LOGGER.error("Failover appender " + name + " is not configured");
+                LOGGER.error("Failover appender {} is not configured", name);
             }
         }
         if (failoverAppenders.isEmpty()) {

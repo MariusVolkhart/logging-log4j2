@@ -175,8 +175,7 @@ public class OptionConverter {
             return null;
         }
 
-        LOGGER.debug("toLevel" + ":class=[" + clazz + "]"
-                + ":pri=[" + levelName + "]");
+        LOGGER.debug("toLevel:class=[{}]:pri=[{}]", clazz, levelName);
 
         try {
             Class customLevel = LoaderUtil.loadClass(clazz);
@@ -195,7 +194,7 @@ public class OptionConverter {
 
             result = (Level) o;
         } catch (ClassNotFoundException e) {
-            LOGGER.warn("custom level class [" + clazz + "] not found.");
+            LOGGER.warn("custom level class [{}] not found.", clazz);
         } catch (NoSuchMethodException e) {
             LOGGER.warn("custom level class [" + clazz + "]"
                     + " does not have a class function toLevel(String, Level)", e);

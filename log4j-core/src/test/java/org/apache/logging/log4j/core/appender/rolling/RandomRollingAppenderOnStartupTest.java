@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.util.Unbox;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -32,6 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -98,7 +100,7 @@ public class RandomRollingAppenderOnStartupTest {
     @Test
     public void testAppender() throws Exception {
         for (int i = 0; i < 100; ++i) {
-            logger.debug("This is test message number " + i);
+            logger.debug("This is test message number {}", box(i));
         }
 
     }

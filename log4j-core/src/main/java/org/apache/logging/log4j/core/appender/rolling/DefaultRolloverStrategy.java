@@ -30,6 +30,7 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.plugins.PluginBuilderAttribute;
 import org.apache.logging.log4j.plugins.PluginElement;
 import org.apache.logging.log4j.plugins.PluginFactory;
+import org.apache.logging.log4j.util.Unbox;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +43,8 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
+
+import static org.apache.logging.log4j.util.Unbox.box;
 
 /**
  * When rolling over, <code>DefaultRolloverStrategy</code> renames files according to an algorithm as described below.
@@ -135,7 +138,7 @@ public class DefaultRolloverStrategy extends AbstractRolloverStrategy {
                     maxIndex = Integer.parseInt(max);
                     if (maxIndex < minIndex) {
                         maxIndex = minIndex < DEFAULT_WINDOW_SIZE ? DEFAULT_WINDOW_SIZE : minIndex;
-                        LOGGER.error("Maximum window size must be greater than the minimum windows size. Set to " + maxIndex);
+                        LOGGER.error("Maximum window size must be greater than the minimum windows size. Set to {}", box(maxIndex));
                     }
                 }
             }

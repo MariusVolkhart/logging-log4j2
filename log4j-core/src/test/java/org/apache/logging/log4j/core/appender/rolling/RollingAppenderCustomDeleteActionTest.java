@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -48,7 +49,7 @@ public class RollingAppenderCustomDeleteActionTest {
         // Trigger the rollover
         for (int i = 0; i < 10; ++i) {
             // 30 chars per message: each message triggers a rollover
-            logger.debug("This is a test message number " + i); // 30 chars:
+            logger.debug("This is a test message number {}", box(i)); // 30 chars:
         }
         Thread.sleep(100); // Allow time for rollover to complete
 
@@ -69,7 +70,7 @@ public class RollingAppenderCustomDeleteActionTest {
                 }
                 return; // test succeeded
             }
-            logger.debug("Adding additional event " + i);
+            logger.debug("Adding additional event {}", box(i));
             Thread.sleep(100); // Allow time for rollover to complete
         }
         fail("No rollover files found");

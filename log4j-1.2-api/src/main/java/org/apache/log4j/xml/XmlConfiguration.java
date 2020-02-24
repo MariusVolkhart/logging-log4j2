@@ -140,8 +140,8 @@ public class XmlConfiguration extends Log4j1Configuration {
         try {
             LOGGER.debug("System property is : {}", OptionConverter.getSystemProperty(dbfKey, null));
             dbf = DocumentBuilderFactory.newInstance();
-            LOGGER.debug("Standard DocumentBuilderFactory search succeded.");
-            LOGGER.debug("DocumentBuilderFactory is: " + dbf.getClass().getName());
+            LOGGER.debug("Standard DocumentBuilderFactory search succeeded.");
+            LOGGER.debug("DocumentBuilderFactory is: {}", dbf.getClass().getName());
         } catch (FactoryConfigurationError fce) {
             Exception e = fce.getException();
             LOGGER.debug("Could not instantiate a DocumentBuilderFactory.", e);
@@ -339,7 +339,7 @@ public class XmlConfiguration extends Log4j1Configuration {
      */
     public Appender parseAppender(Element appenderElement) {
         String className = subst(appenderElement.getAttribute(CLASS_ATTR));
-        LOGGER.debug("Class name: [" + className + ']');
+        LOGGER.debug("Class name: [{}]", className);
         Appender appender = manager.parseAppender(className, appenderElement, this);
         if (appender == null) {
             appender = buildAppender(className, appenderElement);
@@ -416,7 +416,7 @@ public class XmlConfiguration extends Log4j1Configuration {
     public RewritePolicy parseRewritePolicy(Element rewritePolicyElement) {
 
         String className = subst(rewritePolicyElement.getAttribute(CLASS_ATTR));
-        LOGGER.debug("Class name: [" + className + ']');
+        LOGGER.debug("Class name: [{}]", className);
         RewritePolicy policy = manager.parseRewritePolicy(className, rewritePolicyElement, this);
         if (policy == null) {
             policy = buildRewritePolicy(className, rewritePolicyElement);
@@ -480,7 +480,7 @@ public class XmlConfiguration extends Log4j1Configuration {
      */
     public Filter parseFilters(Element filterElement) {
         String className = subst(filterElement.getAttribute(CLASS_ATTR));
-        LOGGER.debug("Class name: [" + className + ']');
+        LOGGER.debug("Class name: [{}]", className);
         Filter filter = manager.parseFilter(className, filterElement, this);
         if (filter == null) {
             PropertySetter propSetter = new PropertySetter(filter);
@@ -677,7 +677,7 @@ public class XmlConfiguration extends Log4j1Configuration {
 
         String debugAttrib = subst(element.getAttribute(INTERNAL_DEBUG_ATTR));
 
-        LOGGER.debug("debug attribute= \"" + debugAttrib + "\".");
+        LOGGER.debug("debug attribute= \"{}\".", debugAttrib);
         // if the log4j.dtd is not specified in the XML file, then the
         // "debug" attribute is returned as the empty string.
         String status = "error";

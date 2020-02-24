@@ -172,7 +172,7 @@ public class FlumeEmbeddedManager extends AbstractFlumeManager {
                 final EmbeddedAgent agent = new EmbeddedAgent(name);
                 agent.configure(props);
                 agent.start();
-                LOGGER.debug("Created Agent " + name);
+                LOGGER.debug("Created Agent {}", name);
                 return new FlumeEmbeddedManager(name, data.name, agent);
             } catch (final Exception ex) {
                 LOGGER.error("Could not create FlumeEmbeddedManager", ex);

@@ -16,6 +16,7 @@
  */
 package org.apache.logging.log4j.core.appender.rolling;
 
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -47,7 +48,7 @@ public class RolloverWithPaddingTest {
     final Logger logger = loggerContextRule.getLogger();
     for (int i = 0; i < 10; ++i) {
       // 30 chars per message: each message triggers a rollover
-      logger.fatal("This is a test message number " + i); // 30 chars:
+      logger.fatal("This is a test message number {}", box(i)); // 30 chars:
     }
     Thread.sleep(100); // Allow time for rollover to complete
 

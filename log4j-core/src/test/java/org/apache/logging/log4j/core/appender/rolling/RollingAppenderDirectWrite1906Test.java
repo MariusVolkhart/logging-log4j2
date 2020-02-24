@@ -28,6 +28,7 @@ import org.apache.logging.log4j.junit.LoggerContextRule;
 import org.apache.logging.log4j.status.StatusData;
 import org.apache.logging.log4j.status.StatusListener;
 import org.apache.logging.log4j.status.StatusLogger;
+import org.apache.logging.log4j.util.Unbox;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -36,6 +37,7 @@ import org.junit.rules.RuleChain;
 
 import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertNotNull;
@@ -73,7 +75,7 @@ public class RollingAppenderDirectWrite1906Test {
     public void testAppender() throws Exception {
         int count = 100;
         for (int i=0; i < count; ++i) {
-            logger.debug("This is test message number " + i);
+            logger.debug("This is test message number {}", box(i));
             Thread.sleep(50);
         }
         Thread.sleep(50);

@@ -129,10 +129,10 @@ public class AppenderSet {
                 app.start();
                 return app;
             }
-            LOGGER.error("Unable to create Appender of type " + node.getName());
+            LOGGER.error("Unable to create Appender of type {}", node.getName());
             return null;
         }
-        LOGGER.error("No Appender was configured for name {} " + actualAppenderName);
+        LOGGER.error("No Appender was configured for name {}", actualAppenderName);
         return null;
     }
 }

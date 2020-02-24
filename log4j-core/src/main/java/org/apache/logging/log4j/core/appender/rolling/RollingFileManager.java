@@ -644,7 +644,7 @@ public class RollingFileManager extends FileManager {
                 if (fileTime.compareTo(EPOCH) > 0) {
                     return fileTime.toMillis();
                 }
-                LOGGER.info("Unable to obtain file creation time for " + file.getAbsolutePath());
+                LOGGER.info("Unable to obtain file creation time for {}", file.getAbsolutePath());
             } catch (Exception ex) {
                 LOGGER.info("Unable to calculate file creation time for " + file.getAbsolutePath() + ": " + ex.getMessage());
             }

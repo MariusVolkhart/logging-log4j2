@@ -112,7 +112,7 @@ public final class RollingRandomAccessFileAppender extends AbstractOutputStreamA
             }
 
             if (filePattern == null) {
-                LOGGER.error("No filename pattern provided for FileAppender with name " + name);
+                LOGGER.error("No filename pattern provided for FileAppender with name {}", name);
                 return null;
             }
 

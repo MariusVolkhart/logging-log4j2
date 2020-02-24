@@ -221,17 +221,16 @@ public final class FlumeAppender extends AbstractAppender implements FlumeEventF
             if (embed && embedded != null) {
                 try {
                     managerType = ManagerType.getType(type);
-                    LOGGER.warn("Embedded and type attributes are mutually exclusive. Using type " + type);
+                    LOGGER.warn("Embedded and type attributes are mutually exclusive. Using type {}", type);
                 } catch (final Exception ex) {
-                    LOGGER.warn("Embedded and type attributes are mutually exclusive and type " + type +
-                        " is invalid.");
+                    LOGGER.warn("Embedded and type attributes are mutually exclusive and type {} is invalid.", type);
                     managerType = ManagerType.EMBEDDED;
                 }
             } else {
                 try {
                     managerType = ManagerType.getType(type);
                 } catch (final Exception ex) {
-                    LOGGER.warn("Type " + type + " is invalid.");
+                    LOGGER.warn("Type {} is invalid.", type);
                     managerType = ManagerType.EMBEDDED;
                 }
             }

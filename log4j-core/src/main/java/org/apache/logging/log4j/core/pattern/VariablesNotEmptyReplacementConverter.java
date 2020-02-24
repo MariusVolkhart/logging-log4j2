@@ -24,6 +24,8 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
+import static org.apache.logging.log4j.util.Unbox.box;
+
 /**
  * VariablesNotEmpty pattern converter.
  */
@@ -57,7 +59,7 @@ public final class VariablesNotEmptyReplacementConverter extends LogEventPattern
     public static VariablesNotEmptyReplacementConverter newInstance(final Configuration config,
             final String[] options) {
         if (options.length != 1) {
-            LOGGER.error("Incorrect number of options on varsNotEmpty. Expected 1 received " + options.length);
+            LOGGER.error("Incorrect number of options on varsNotEmpty. Expected 1 received {}", box(options.length));
             return null;
         }
         if (options[0] == null) {

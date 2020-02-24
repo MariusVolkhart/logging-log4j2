@@ -22,6 +22,7 @@ import java.util.Random;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.junit.LoggerContextRule;
+import org.apache.logging.log4j.util.Unbox;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,6 +30,7 @@ import org.junit.rules.RuleChain;
 
 import static org.apache.logging.log4j.hamcrest.Descriptors.that;
 import static org.apache.logging.log4j.hamcrest.FileMatchers.hasName;
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItemInArray;
 import static org.junit.Assert.assertEquals;
@@ -64,7 +66,7 @@ public class RollingAppenderCronAndSizeTest {
 		for (int j=0; j < 100; ++j) {
 			int count = rand.nextInt(100);
 			for (int i = 0; i < count; ++i) {
-				logger.debug("This is test message number " + i);
+				logger.debug("This is test message number {}", box(i));
 			}
 			Thread.sleep(rand.nextInt(50));
 		}

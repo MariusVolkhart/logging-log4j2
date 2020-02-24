@@ -42,6 +42,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import static org.apache.logging.log4j.util.Unbox.box;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -107,7 +108,7 @@ public class RollingAppenderOnStartupTest {
     @Test
     public void testAppender() throws Exception {
         for (int i = 0; i < 100; ++i) {
-            logger.debug("This is test message number " + i);
+            logger.debug("This is test message number {}", box(i));
         }
 
     }

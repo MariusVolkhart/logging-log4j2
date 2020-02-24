@@ -26,6 +26,8 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.core.util.Patterns;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 
+import static org.apache.logging.log4j.util.Unbox.box;
+
 /**
  * Style pattern converter. Adds ANSI color styling to the result of the enclosed pattern.
  *
@@ -80,7 +82,7 @@ public final class StyleConverter extends LogEventPatternConverter implements An
             return null;
         }
         if (options.length < 2) {
-            LOGGER.error("Incorrect number of options on style. Expected at least 1, received " + options.length);
+            LOGGER.error("Incorrect number of options on style. Expected at least 1, received {}", box(options.length));
             return null;
         }
         if (options[0] == null) {

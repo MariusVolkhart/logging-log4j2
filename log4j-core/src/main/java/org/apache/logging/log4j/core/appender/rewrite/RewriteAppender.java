@@ -65,7 +65,7 @@ public final class RewriteAppender extends AbstractAppender {
                     ((AbstractAppender) appender).getFilter() : null;
                 appenders.put(name, new AppenderControl(appender, ref.getLevel(), filter));
             } else {
-                LOGGER.error("Appender " + ref + " cannot be located. Reference ignored");
+                LOGGER.error("Appender {} cannot be located. Reference ignored", ref);
             }
         }
         super.start();

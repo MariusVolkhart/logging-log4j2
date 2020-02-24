@@ -179,8 +179,7 @@ public class PropertySetter {
         //LOGGER.debug("---------Key: "+name+", type="+prop.getPropertyType());
 
         if (prop == null) {
-            LOGGER.warn("No such property [" + name + "] in " +
-                    obj.getClass().getName() + ".");
+            LOGGER.warn("No such property [{}] in {}.", name, obj.getClass().getName());
         } else {
             try {
                 setProperty(prop, name, value);
@@ -220,7 +219,7 @@ public class PropertySetter {
             throw new PropertySetterException(
                     "Conversion to type [" + paramTypes[0] + "] failed.");
         }
-        LOGGER.debug("Setting property [" + name + "] to [" + arg + "].");
+        LOGGER.debug("Setting property [{}] to [{}].", name, arg);
         try {
             setter.invoke(obj, arg);
         } catch (InvocationTargetException ex) {

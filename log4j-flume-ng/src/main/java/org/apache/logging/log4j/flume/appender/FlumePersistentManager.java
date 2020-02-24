@@ -59,6 +59,9 @@ import org.apache.logging.log4j.core.util.SecretKeyProvider;
 import org.apache.logging.log4j.plugins.util.PluginManager;
 import org.apache.logging.log4j.plugins.util.PluginType;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.Unbox;
+
+import static org.apache.logging.log4j.util.Unbox.box;
 
 /**
  * Manager that persists data to Berkeley DB before passing it on to Flume.
@@ -506,7 +509,7 @@ public class FlumePersistentManager extends FlumeAvroManager {
 
         @Override
         public void run() {
-            LOGGER.trace("WriterThread started - batch size = " + batchSize + ", delayMillis = " + manager.getDelayMillis());
+            LOGGER.trace("WriterThread started - batch size = {}, delayMillis = {}", box(batchSize), box(manager.getDelayMillis()));
             long nextBatchMillis = System.currentTimeMillis() + manager.getDelayMillis();
             while (!shutdown) {
                 final long nowMillis = System.currentTimeMillis();

@@ -67,7 +67,7 @@ public final class RandomAccessFileAppender extends AbstractOutputStreamAppender
             }
 
             if (fileName == null) {
-                LOGGER.error("No filename provided for FileAppender with name " + name);
+                LOGGER.error("No filename provided for FileAppender with name {}", name);
                 return null;
             }
             final Layout<? extends Serializable> layout = getOrCreateLayout();

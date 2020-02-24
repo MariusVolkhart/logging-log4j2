@@ -76,7 +76,7 @@ public final class FileSize {
                 } else if (units.equalsIgnoreCase("G")) {
                     return value * GB;
                 } else {
-                    LOGGER.error("FileSize units not recognized: " + string);
+                    LOGGER.error("FileSize units not recognized: {}", string);
                     return defaultValue;
                 }
             } catch (final ParseException e) {
@@ -84,7 +84,7 @@ public final class FileSize {
                 return defaultValue;
             }
         }
-        LOGGER.error("FileSize unable to parse bytes: " + string);
+        LOGGER.error("FileSize unable to parse bytes: {}", string);
         return defaultValue;
     }
 

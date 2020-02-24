@@ -48,11 +48,14 @@ import org.apache.logging.log4j.core.Logger;
 import org.apache.logging.log4j.message.StructuredDataMessage;
 import org.apache.logging.log4j.status.StatusLogger;
 import org.apache.logging.log4j.test.AvailablePortFinder;
+import org.apache.logging.log4j.util.Unbox;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.apache.logging.log4j.util.Unbox.box;
 
 /**
  *
@@ -225,7 +228,7 @@ public class FlumeAppenderTest {
         Assert.assertNotNull(avroLogger);
 
         for (int i = 0; i < 10; ++i) {
-            avroLogger.info("Test message " + i);
+            avroLogger.info("Test message {}", box(i));
         }
 
         for (int i = 0; i < 10; ++i) {
@@ -334,7 +337,7 @@ public class FlumeAppenderTest {
         Assert.assertNotNull(avroLogger);
 
         for (int i = 0; i < 10; ++i) {
-            avroLogger.info("Test message " + i);
+            avroLogger.info("Test message {}", box(i));
         }
 
         final Transaction transaction = channel.getTransaction();

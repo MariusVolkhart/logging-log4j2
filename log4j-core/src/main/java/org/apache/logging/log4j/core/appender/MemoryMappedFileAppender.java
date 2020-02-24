@@ -76,7 +76,7 @@ public final class MemoryMappedFileAppender extends AbstractOutputStreamAppender
             }
 
             if (fileName == null) {
-                LOGGER.error("No filename provided for MemoryMappedFileAppender with name " + name);
+                LOGGER.error("No filename provided for MemoryMappedFileAppender with name {}", name);
                 return null;
             }
             final Layout<? extends Serializable> layout = getOrCreateLayout();

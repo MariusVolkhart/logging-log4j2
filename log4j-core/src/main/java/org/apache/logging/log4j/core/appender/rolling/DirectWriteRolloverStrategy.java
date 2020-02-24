@@ -290,7 +290,7 @@ public class DirectWriteRolloverStrategy extends AbstractRolloverStrategy implem
      */
     @Override
     public RolloverDescription rollover(final RollingFileManager manager) throws SecurityException {
-        LOGGER.debug("Rolling " + currentFileName);
+        LOGGER.debug("Rolling {}", currentFileName);
         if (maxFiles < 0) {
             return null;
         }

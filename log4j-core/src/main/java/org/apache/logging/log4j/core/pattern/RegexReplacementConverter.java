@@ -23,6 +23,9 @@ import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.util.Unbox;
+
+import static org.apache.logging.log4j.util.Unbox.box;
 
 /**
  * Replacement pattern converter.
@@ -61,7 +64,7 @@ public final class RegexReplacementConverter extends LogEventPatternConverter {
      */
     public static RegexReplacementConverter newInstance(final Configuration config, final String[] options) {
         if (options.length != 3) {
-            LOGGER.error("Incorrect number of options on replace. Expected 3 received " + options.length);
+            LOGGER.error("Incorrect number of options on replace. Expected 3 received {}", box(options.length));
             return null;
         }
         if (options[0] == null) {

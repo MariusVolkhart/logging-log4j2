@@ -121,7 +121,7 @@ public class LoggerContextAdmin extends NotificationBroadcasterSupport implement
             throw new IllegalArgumentException("Missing configuration location");
         }
         LOGGER.debug("---------");
-        LOGGER.debug("Remote request to reconfigure using location " + configLocation);
+        LOGGER.debug("Remote request to reconfigure using location {}", configLocation);
         final File configFile = new File(configLocation);
         ConfigurationSource configSource = null;
         if (configFile.exists()) {

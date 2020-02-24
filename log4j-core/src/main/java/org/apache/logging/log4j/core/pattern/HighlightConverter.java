@@ -29,6 +29,9 @@ import org.apache.logging.log4j.plugins.Plugin;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.apache.logging.log4j.util.PerformanceSensitive;
 import org.apache.logging.log4j.util.Strings;
+import org.apache.logging.log4j.util.Unbox;
+
+import static org.apache.logging.log4j.util.Unbox.box;
 
 /**
  * Highlight pattern converter. Formats the result of a pattern using a color appropriate for the Level in the LogEvent.
@@ -157,8 +160,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
             if (STYLE_KEY.equalsIgnoreCase(key)) {
                 final Map<String, String> enumMap = STYLES.get(value.toUpperCase(Locale.ENGLISH));
                 if (enumMap == null) {
-                    LOGGER.error("Unknown level style: " + value + ". Use one of " +
-                        Arrays.toString(STYLES.keySet().toArray()));
+                    LOGGER.error("Unknown level style: {}. Use one of {}", value, Arrays.toString(STYLES.keySet().toArray()));
                 } else {
                     levelStyles.putAll(enumMap);
                 }
@@ -185,7 +187,7 @@ public final class HighlightConverter extends LogEventPatternConverter implement
      */
     public static HighlightConverter newInstance(final Configuration config, final String[] options) {
         if (options.length < 1) {
-            LOGGER.error("Incorrect number of options on style. Expected at least 1, received " + options.length);
+            LOGGER.error("Incorrect number of options on style. Expected at least 1, received {}", box(options.length));
             return null;
         }
         if (options[0] == null) {
