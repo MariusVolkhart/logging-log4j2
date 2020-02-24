@@ -307,13 +307,8 @@ public class PluginRegistry {
             final String category = plugin.category();
             String elementName = useElementTypeAsName ? plugin.elementType() : pluginName;
 
-            final PluginEntry mainEntry = new PluginEntry();
-            mainEntry.setKey(pluginName.toLowerCase());
-            mainEntry.setName(pluginName);
-            mainEntry.setCategory(category);
-            mainEntry.setClassName(className);
-            mainEntry.setPrintable(printable);
-            mainEntry.setDefer(defer);
+            final PluginEntry mainEntry =
+                    new PluginEntry(pluginName.toLowerCase(), className, pluginName, printable, defer, category);
             final PluginType<?> mainType = new PluginType<>(mainEntry, clazz, elementName);
             list.add(mainType);
 
@@ -325,13 +320,8 @@ public class PluginRegistry {
                         elementName = alias;
                     }
 
-                    final PluginEntry aliasEntry = new PluginEntry();
-                    aliasEntry.setKey(alias.toLowerCase());
-                    aliasEntry.setName(pluginName);
-                    aliasEntry.setCategory(category);
-                    aliasEntry.setClassName(className);
-                    aliasEntry.setPrintable(printable);
-                    aliasEntry.setDefer(defer);
+                    final PluginEntry aliasEntry =
+                            new PluginEntry(alias.toLowerCase(), className, pluginName, printable, defer, category);
                     final PluginType<?> aliasType = new PluginType<>(aliasEntry, clazz, elementName);
                     list.add(aliasType);
                 }
